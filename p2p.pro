@@ -23,7 +23,8 @@ SOURCES += main.cpp \
     KeyLogger.cpp \
     MessageController.cpp \
     PipePackage.cpp \
-    web/HttpManager.cpp
+    web/HttpManager.cpp \
+    web/HttpResponse.cpp
 
 HEADERS += \
     Gateway.h \
@@ -33,7 +34,8 @@ HEADERS += \
     Global.h \
     MessageController.h \
     PipePackage.h \
-    web/HttpManager.h
+    web/HttpManager.h \
+    web/HttpResponse.h
 
 OBJECTS_DIR = tmp/o
 MOC_DIR = tmp/moc

@@ -2,16 +2,29 @@
 #define HTTPMANAGER_H
 
 #include <QObject>
+#include <QUrl>
+#include <QTcpSocket>
+#include <QSslSocket>
 
 class HttpManager : public QObject
 {
     Q_OBJECT
+
 public:
+    enum HTTPMethod
+    {
+        enMethodGET,
+        enMethodPOST,
+        enMethodPUT,
+        enMethodDELETE,
+        enMethodHEAD
+    };
+
     explicit HttpManager(QObject *parent = nullptr);
 
-signals:
+    static QString getPage(QUrl url, HTTPMethod method = enMethodGET);
 
-public slots:
+
 };
 
 #endif // HTTPMANAGER_H

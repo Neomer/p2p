@@ -1,13 +1,25 @@
 #include <QCoreApplication>
-#include <PeerCollection.h>
 #include "Gateway.h"
 #include "Global.h"
 #include <QSettings>
 #include <QDir>
+#include "web/HttpManager.h"
+#include "web/HttpResponse.h"
+#include <QJsonDocument>
+#include <QJsonParseError>
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
+
+    HttpResponse resp(HttpManager::getPage(QUrl("http://api.sypexgeo.net/")));
+    qDebug() << resp.status() << resp.statusMessage() << resp.header("Content-Encoding") << QString::fromUtf8(qUncompress(resp.body().toUtf8()));
+    QJsonParseError err;
+    QJsonDocument json = QJsonDocument::fromJson(resp.body().toUtf8(), &err);
+    if (err.error != QJsonParseError::NoError)
+    {
+        qDebug() <<"Json parsing error" << err.errorString() <<  "near" << resp.body().mid(err.offset, 5);
+    }
 
     QDir dir(a.applicationDirPath());
     QSettings settings(dir.absoluteFilePath("p2p.conf"), QSettings::IniFormat);
