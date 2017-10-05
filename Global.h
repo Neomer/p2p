@@ -12,4 +12,6 @@ static KeyLogger *keyLogger = 0;
 static PipeController *pipeController = 0;
 static MessageController *messageController = 0;
 
+static QString ip = "";
+
 #endif // GLOBAL_H

@@ -24,7 +24,10 @@ SOURCES += main.cpp \
     MessageController.cpp \
     PipePackage.cpp \
     web/HttpManager.cpp \
-    web/HttpResponse.cpp
+    web/HttpResponse.cpp \
+    web/HttpUtils.cpp \
+    core/CommandProvider.cpp \
+    core/KeyCommand.cpp
 
 HEADERS += \
     Gateway.h \
@@ -35,7 +38,10 @@ HEADERS += \
     MessageController.h \
     PipePackage.h \
     web/HttpManager.h \
-    web/HttpResponse.h
+    web/HttpResponse.h \
+    web/HttpUtils.h \
+    core/CommandProvider.h \
+    core/KeyCommand.h
 
 OBJECTS_DIR = tmp/o
 MOC_DIR = tmp/moc

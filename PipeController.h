@@ -12,11 +12,11 @@ public:
     PipeController(Gateway *gateway, QObject * parent = 0);
 
     void terminate();
-
     void send(PipePackage data);
 
 public slots:
     void addPipe(Pipe *pipe);
+    void getPipeCount();
 
 protected:
     void run();

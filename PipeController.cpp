@@ -1,10 +1,12 @@
 #include "PipeController.h"
+#include "core/CommandProvider.h"
 
 PipeController::PipeController(Gateway *gateway, QObject *parent) :
     QThread(parent)
 {
     connect(gateway, SIGNAL(pipeOpened(Pipe*)), this, SLOT(addPipe(Pipe*)));
-
+    CommandProvider::instance().registerCommand(this, "pipe");
+    
     start(Priority::LowPriority);
 }
 
@@ -28,6 +30,11 @@ void PipeController::addPipe(Pipe *pipe)
     _pipeList << pipe;
     //pipe->moveToThread(this);
     connect(pipe, SIGNAL(dataReceived(PipePackage)), this, SLOT(pipePackage(PipePackage)));
+}
+
+void PipeController::getPipeCount()
+{
+    qDebug() << "Pipes:" << _pipeList.count();
 }
 
 

@@ -34,8 +34,14 @@ QString HttpManager::getPage(QUrl url, HttpManager::HTTPMethod method)
             throw std::runtime_error("Unknown request method!");
     }
 
-    QString sRequest = sMet + " " + (url.path().isEmpty() ? "/" : url.path()) + (url.hasQuery() ? "?" + url.query() : "") + " HTTP/1.1\nHost: " + url.host() + "\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\nConnection: keep-alive\nCache-Control: max-age=0\nAccept-Encoding: identity, gzip\nUser-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36\n\n";
-    //QString sRequest = "GET /?format=text HTTP/1.1\nHost: api.ipify.org\nContent-Length: 0\n\n";
+    QString sRequest = sMet + " " + (url.path().isEmpty() ? "/" : url.path()) + (url.hasQuery() ? "?" + url.query() : "") + " HTTP/1.0\r\n" +
+            "Host: " + url.host() + "\r\n" +
+            "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\r\n" +
+            "Connection: keep-alive\r\n" +
+            "Cache-Control: max-age=0\r\n" +
+            "Accept-Encoding: gzip, deflate, identity\r\n" +
+            "X-Compress: null\r\n" +
+            "User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36\r\n\r\n";
 
     if (url.toString().indexOf("https://") == -1)
     {
@@ -50,10 +56,11 @@ QString HttpManager::getPage(QUrl url, HttpManager::HTTPMethod method)
             throw std::runtime_error("Not all data was written!");
         }
         QString ret;
-        while (socket.waitForReadyRead(1000))
+        while (socket.waitForReadyRead(5000))
         {
             ret.append(QString::fromUtf8(socket.readAll()));
         }
+
         socket.close();
         return ret;
     }
@@ -69,11 +76,11 @@ QString HttpManager::getPage(QUrl url, HttpManager::HTTPMethod method)
         {
             throw std::runtime_error("Not all data was written!");
         }
-        if (!socket.waitForReadyRead(5000))
+        QString ret;
+        while (socket.waitForReadyRead(5000))
         {
-            throw std::runtime_error("Timeout!");
+            ret.append(QString::fromUtf8(socket.readAll()));
         }
-        QString ret = QString::fromUtf8(socket.readAll());
         socket.close();
         return ret;
     }

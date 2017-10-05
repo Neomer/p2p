@@ -38,8 +38,8 @@ Pipe::Pipe(QString address, QObject *parent) :
 
 Pipe::~Pipe()
 {
-    //_pingTimer->stop();
-    //delete _pingTimer;
+    _pingTimer->stop();
+    delete _pingTimer;
 }
 
 void Pipe::flushBuffer()
@@ -82,8 +82,7 @@ void Pipe::ping()
 {
     qDebug() << "Pipe" << (int)this << "send ping request";
     PipePackage resp(PACKAGE_COMMAND_PING_REQUEST);
-    if (isClosed())
-        open();
+    if (isClosed()) open();
     _socket->write(resp.rawData());
     _connectionsFails++;
 }

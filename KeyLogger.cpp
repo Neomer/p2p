@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <iostream>
+#include "core/CommandProvider.h"
 
 KeyLogger::KeyLogger(QObject *parent) :
     QThread(parent)
@@ -29,6 +30,10 @@ void KeyLogger::run()
             qApp->quit();
             return;
         }
-        emit command(sLine);
+        KeyCommand cmd(sLine);
+        if (!CommandProvider::instance().call(cmd))
+        {
+            emit command(sLine);
+        }
     }
 }
