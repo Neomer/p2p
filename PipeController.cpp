@@ -37,6 +37,11 @@ void PipeController::getPipeCount()
     qDebug() << "Pipes:" << _pipeList.count();
 }
 
+void PipeController::createPipe(KeyCommand command)
+{
+    addPipe(new Pipe(command.args().at(0)));
+}
+
 
 void PipeController::run()
 {

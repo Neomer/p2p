@@ -7,5 +7,5 @@ KeyCommand::KeyCommand(QString data)
     _class = data.mid(0, pnt);
     _method = data.mid(pnt + 1, data.indexOf('(') - pnt - 1);
     pnt = data.indexOf('(');
-    _args = data.mid(pnt + 1, data.lastIndexOf(')') - pnt - 1).split(',');
+    _args = data.mid(pnt + 1, data.lastIndexOf(')') - pnt - 1).split(',', QString::SkipEmptyParts);
 }

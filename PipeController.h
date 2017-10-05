@@ -3,6 +3,7 @@
 
 #include <QThread>
 #include "Gateway.h"
+#include "core/KeyCommand.h"
 
 class PipeController : public QThread
 {
@@ -16,7 +17,10 @@ public:
 
 public slots:
     void addPipe(Pipe *pipe);
+    
+// Key Commands
     void getPipeCount();
+    void createPipe(KeyCommand command);
 
 protected:
     void run();

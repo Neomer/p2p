@@ -31,7 +31,13 @@ void KeyLogger::run()
             return;
         }
         KeyCommand cmd(sLine);
-        if (!CommandProvider::instance().call(cmd))
+        try {
+            if (!CommandProvider::instance().call(cmd))
+            {
+                emit command(sLine);
+            }
+        }
+        catch (std::exception &ex)
         {
             emit command(sLine);
         }

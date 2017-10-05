@@ -21,7 +21,8 @@ bool CommandProvider::call(KeyCommand command)
             if (QString::fromUtf8(meth.name()).toLower() == command.methodName().toLower())
             {
                 if (meth.access() != QMetaMethod::Public || meth.methodType() != QMetaMethod::Slot) return false;
-                if (!meth.invoke(o, Qt::DirectConnection)) 
+                QGenericReturnArgument ret; 
+                if (!meth.invoke(o, Qt::DirectConnection, ret, QGenericArgument("command", &command)))
                 {
                     qDebug() << "Invoke failed!" << command.className() << command.methodName() << command.args().count();
                     throw std::runtime_error("Invoke failed!");
