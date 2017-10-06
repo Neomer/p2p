@@ -1,5 +1,6 @@
 #include "PipeController.h"
 #include "core/CommandProvider.h"
+#include "Global.h"
 
 PipeController::PipeController(Gateway *gateway, QObject *parent) :
     QThread(parent)
@@ -32,9 +33,16 @@ void PipeController::addPipe(Pipe *pipe)
     connect(pipe, SIGNAL(dataReceived(PipePackage)), this, SLOT(pipePackage(PipePackage)));
 }
 
-void PipeController::getPipeCount()
+void PipeController::getCount(KeyCommand command)
 {
+    Q_UNUSED(command);
     qDebug() << "Pipes:" << _pipeList.count();
+}
+
+void PipeController::askShares(KeyCommand command)
+{
+    Q_UNUSED(command);
+    send(PipePackage(PACKAGE_COMMAND_SHARE_REQUEST));
 }
 
 void PipeController::createPipe(KeyCommand command)
@@ -85,5 +93,14 @@ void PipeController::run()
 
 void PipeController::pipePackage(PipePackage pkg)
 {
-    emit pipeCommand(QString::fromUtf8(pkg.data()));
+    if (pkg.command() == PACKAGE_COMMAND_SHARE_REQUEST)
+    {
+        QString data;
+        data.append(ip + ";");
+        send(PipePackage(PACKAGE_COMMAND_SHARE_RESPONSE, data.toUtf8()));
+    }
+    else
+    {
+        emit pipeCommand(QString::fromUtf8(pkg.data()));
+    }
 }

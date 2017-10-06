@@ -22,7 +22,7 @@ bool CommandProvider::call(KeyCommand command)
             {
                 if (meth.access() != QMetaMethod::Public || meth.methodType() != QMetaMethod::Slot) return false;
                 QGenericReturnArgument ret; 
-                if (!meth.invoke(o, Qt::DirectConnection, ret, QGenericArgument("command", &command)))
+                if (!meth.invoke(o, Qt::AutoConnection, ret, QGenericArgument("command", &command)))
                 {
                     qDebug() << "Invoke failed!" << command.className() << command.methodName() << command.args().count();
                     throw std::runtime_error("Invoke failed!");

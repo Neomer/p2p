@@ -19,7 +19,8 @@ public slots:
     void addPipe(Pipe *pipe);
     
 // Key Commands
-    void getPipeCount();
+    void getCount(KeyCommand command);
+    void askShares(KeyCommand command);
     void createPipe(KeyCommand command);
 
 protected:

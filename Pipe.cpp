@@ -107,7 +107,7 @@ void Pipe::readData()
     }
     else
     {
-        qDebug() << "Pipe" << (int)this << "received from" << _socket->peerAddress().toString() << len << "byte(s)";
+        qDebug() << "Pipe" << (int)this << "received from" << _socket->peerAddress().toString() << "command" << pkg.command();
         emit dataReceived(pkg);
     }
 }

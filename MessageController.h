@@ -16,10 +16,6 @@ public:
 
     void terminate();
 
-signals:
-
-public slots:
-
 private slots:
     void addCommand(QString message);
     void addRemoteCommand(QString message);

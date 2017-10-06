@@ -7,7 +7,9 @@
 class KeyCommand
 {
 public:
+    KeyCommand();
     explicit KeyCommand(QString data);
+    KeyCommand(const KeyCommand &other);
 
     QString className() { return _class; }
     QString methodName() { return _method; }
@@ -17,5 +19,7 @@ private:
     QString _class, _method;
     QList<QString> _args;
 };
+
+Q_DECLARE_METATYPE(KeyCommand)
 
 #endif // KEYCOMMAND_H
