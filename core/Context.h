@@ -24,6 +24,7 @@ public:
     MessageController *messageController;
     
     QString getIp() { return _ip; }
+    void setIp(QString value) { _ip = value; }
     
 private:
     Context(QObject *parent = nullptr);

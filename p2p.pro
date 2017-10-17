@@ -28,7 +28,8 @@ SOURCES += main.cpp \
     web/HttpUtils.cpp \
     core/CommandProvider.cpp \
     core/KeyCommand.cpp \
-    core/Context.cpp
+    core/Context.cpp \
+    core/Hash.cpp
 
 HEADERS += \
     Gateway.h \
@@ -43,7 +44,8 @@ HEADERS += \
     web/HttpUtils.h \
     core/CommandProvider.h \
     core/KeyCommand.h \
-    core/Context.h
+    core/Context.h \
+    core/Hash.h
 
 OBJECTS_DIR = tmp/o
 MOC_DIR = tmp/moc

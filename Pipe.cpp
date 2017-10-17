@@ -89,7 +89,6 @@ void Pipe::ping()
 
 void Pipe::readData()
 {
-    int len = _socket->bytesAvailable();
     PipePackage pkg(_socket->readAll());
     if (pkg.command() == PACKAGE_COMMAND_PING_REQUEST)
     {

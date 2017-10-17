@@ -12,7 +12,7 @@ class MessageController : public QThread
     Q_OBJECT
 
 public:
-    MessageController(KeyLogger *logger, PipeController *pipe, QObject *parent = nullptr);
+    MessageController(QObject *parent = nullptr);
 
     void terminate();
 

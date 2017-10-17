@@ -1,15 +1,13 @@
 #include "MessageController.h"
 #include <QDebug>
-#include "Global.h"
 #include <iostream>
+#include "core/Context.h"
 
-MessageController::MessageController(KeyLogger *logger, PipeController *pipe, QObject *parent) :
+MessageController::MessageController(QObject *parent) :
     QThread(parent)
 {
-    connect(logger, SIGNAL(command(QString)), this, SLOT(addCommand(QString)));
-    connect(pipe, SIGNAL(pipeCommand(QString)), this, SLOT(addRemoteCommand(QString)));
-
-    pipeController = pipe;
+    connect(Context::instance().keyLogger, SIGNAL(command(QString)), this, SLOT(addCommand(QString)));
+    connect(Context::instance().pipeController, SIGNAL(pipeCommand(QString)), this, SLOT(addRemoteCommand(QString)));
 
     start();
 }
@@ -24,10 +22,10 @@ void MessageController::addCommand(QString message)
 {
     //_msgs << message;
     _history << QCryptographicHash::hash(message.toUtf8(), QCryptographicHash::Sha256);
-    if (pipeController)
+    if (Context::instance().pipeController)
     {
         PipePackage pkg(PACKAGE_COMMAND_TEST_MESSAGE, message.toUtf8());
-        pipeController->send(pkg);
+        Context::instance().pipeController->send(pkg);
     }
 }
 
@@ -39,10 +37,10 @@ void MessageController::addRemoteCommand(QString message)
 
     _history << ba;
     std::cout << "Message received: " << message.toUtf8().constData() << "\n";
-    if (pipeController)
+    if (Context::instance().pipeController)
     {
         PipePackage pkg(PACKAGE_COMMAND_TEST_MESSAGE, message.toUtf8());
-        pipeController->send(pkg);
+        Context::instance().pipeController->send(pkg);
     }
 }
 
@@ -56,7 +54,7 @@ void MessageController::run()
         {
             QString m = _msgs.takeFirst();
             _history << QCryptographicHash::hash(m.toUtf8(), QCryptographicHash::Sha256);
-            if (pipeController)
+            if (Context::instance().pipeController)
             {
                 //pipeController->send(m);
             }
