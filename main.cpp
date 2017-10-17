@@ -13,6 +13,8 @@
 #include "core/CommandProvider.h"
 #include "core/Context.h"
 
+#include "blockchain/Block.h"
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);

@@ -90,6 +90,11 @@ void Pipe::ping()
 void Pipe::readData()
 {
     PipePackage pkg(_socket->readAll());
+    if (!pkg.isValid())
+    {
+        qDebug() << "Invalid package!";
+        return;
+    }
     if (pkg.command() == PACKAGE_COMMAND_PING_REQUEST)
     {
         qDebug() << "Pipe" << (int)this << "receive ping request";

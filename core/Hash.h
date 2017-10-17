@@ -2,6 +2,7 @@
 #define HASH_H
 
 #include <QObject>
+#include <QJsonObject>
 
 class Hash : public QObject
 {
@@ -24,6 +25,10 @@ public:
         
     bool isNull() { return _hash.isEmpty(); }
     bool isHashOfEmpty();
+    
+    QString toString() { return QString::fromUtf8(_hash.toHex()); }
+    
+    static Hash hash(const QJsonObject &object);
     
     bool operator ==(const Hash &other);
     bool operator ==(QByteArray hash);
@@ -48,5 +53,7 @@ public:
 private:
     QByteArray _hash;    
 };
+
+Q_DECLARE_METATYPE(Hash)
 
 #endif // HASH_H

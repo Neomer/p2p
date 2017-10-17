@@ -29,7 +29,10 @@ SOURCES += main.cpp \
     core/CommandProvider.cpp \
     core/KeyCommand.cpp \
     core/Context.cpp \
-    core/Hash.cpp
+    core/Hash.cpp \
+    core/EventBus.cpp \
+    core/ISerializable.cpp \
+    blockchain/Block.cpp
 
 HEADERS += \
     Gateway.h \
@@ -45,7 +48,11 @@ HEADERS += \
     core/CommandProvider.h \
     core/KeyCommand.h \
     core/Context.h \
-    core/Hash.h
+    core/Hash.h \
+    core/IEventDispatcher.h \
+    core/EventBus.h \
+    core/ISerializable.h \
+    blockchain/Block.h
 
 OBJECTS_DIR = tmp/o
 MOC_DIR = tmp/moc

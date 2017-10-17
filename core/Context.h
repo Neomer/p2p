@@ -6,6 +6,7 @@
 #include "PipeController.h"
 #include "MessageController.h"
 
+#include "core/EventBus.h"
 
 
 class Context : public QObject
@@ -22,6 +23,8 @@ public:
     KeyLogger *keyLogger;
     PipeController *pipeController;
     MessageController *messageController;
+    EventBus busMain;
+    EventBus busNetwork;
     
     QString getIp() { return _ip; }
     void setIp(QString value) { _ip = value; }

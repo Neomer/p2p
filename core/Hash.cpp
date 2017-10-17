@@ -1,4 +1,6 @@
 #include "Hash.h"
+#include <QCryptographicHash>
+#include <QJsonDocument>
 
 Hash::Hash()
 {
@@ -29,6 +31,12 @@ Hash::Hash(const Hash &other) :
 bool Hash::isHashOfEmpty()
 {
     return _hash == QByteArray::fromHex(QString("a69f73cca23a9ac5c8b567dc185a756e97c982164fe25859e0d1dcc1475c80a615b2123af1f5f94c11e3e9402c3ac558f500199d95b6d3e301758586281dcd26").toUtf8());
+}
+
+Hash Hash::hash(const QJsonObject &object)
+{
+    QJsonDocument json(object);
+    return Hash(QCryptographicHash::hash(json.toJson(QJsonDocument::Compact), QCryptographicHash::Sha512));
 }
 
 bool Hash::operator ==(const Hash &other)
