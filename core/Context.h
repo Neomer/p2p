@@ -2,6 +2,7 @@
 #define CONTEXT_H
 
 #include <QObject>
+#include <QDir>
 #include "KeyLogger.h"
 #include "PipeController.h"
 #include "MessageController.h"
@@ -28,6 +29,11 @@ public:
     
     QString getIp() { return _ip; }
     void setIp(QString value) { _ip = value; }
+    
+    QDir databasePath();
+    QDir appDataPath();
+    
+    void load();
     
 private:
     Context(QObject *parent = nullptr);

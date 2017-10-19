@@ -6,6 +6,7 @@
 #include <QJsonDocument>
 #include <QJsonParseError>
 #include <QJsonObject>
+#include <QDebug>
 
 #include "web/HttpManager.h"
 #include "web/HttpResponse.h"
@@ -14,10 +15,24 @@
 #include "core/Context.h"
 
 #include "blockchain/Block.h"
+#include <blockchain/BlockChain.h>
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
+    
+    try
+    {
+        Context::instance().load();
+    }
+    catch(std::exception &e)
+    {
+        qDebug() << "Context initialisation failed!" << e.what();
+        return -1;
+    }
+    
+    BlockChain chain;
+    qDebug() << chain.contains(Hash::randomHash());
     
     HttpResponse resp(HttpManager::getPage(QUrl("http://api.sypexgeo.net/")));
     QJsonParseError err;

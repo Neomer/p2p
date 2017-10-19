@@ -1,8 +1,8 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
-#include "core/ISerializable.h"
-#include "core/Hash.h"
+#include <core/ISerializable.h>
+#include <core/Hash.h>
 
 class Block : public ISerializable
 {

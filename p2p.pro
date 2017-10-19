@@ -32,7 +32,9 @@ SOURCES += main.cpp \
     core/Hash.cpp \
     core/EventBus.cpp \
     core/ISerializable.cpp \
-    blockchain/Block.cpp
+    blockchain/Block.cpp \
+    blockchain/BlockChainIndex.cpp \
+    blockchain/BlockChain.cpp
 
 HEADERS += \
     Gateway.h \
@@ -52,7 +54,11 @@ HEADERS += \
     core/IEventDispatcher.h \
     core/EventBus.h \
     core/ISerializable.h \
-    blockchain/Block.h
+    blockchain/Block.h \
+    blockchain/BlockChainIndex.h \
+    blockchain/BlockChain.h
+
+INCLUDEPATH += $PWD
 
 OBJECTS_DIR = tmp/o
 MOC_DIR = tmp/moc

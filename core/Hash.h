@@ -26,6 +26,8 @@ public:
     bool isNull() { return _hash.isEmpty(); }
     bool isHashOfEmpty();
     
+    static Hash randomHash();
+    
     QString toString() { return QString::fromUtf8(_hash.toHex()); }
     
     static Hash hash(const QJsonObject &object);
