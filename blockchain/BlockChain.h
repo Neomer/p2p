@@ -14,8 +14,9 @@ public:
     
     void load();
     bool find(Hash h, Block *b);
-    bool save(Block b);
+    bool save(Block *b);
     bool contains(Hash h);
+    
     
 private:
     QStringList getPathFromHash(Hash h);

@@ -40,9 +40,41 @@ bool BlockChain::find(Hash h, Block *b)
     return true;
 }
 
-bool BlockChain::save(Block b)
+bool BlockChain::save(Block *b)
 {
+    QJsonObject o = b->serialize();
     
+    if (contains(o["hash"].toString()))
+    {
+        qDebug() << "Dublicate block!" << o["hash"].toString();
+        return false;
+    }
+    
+    QString path = getPathFromHash(Hash(o["hash"].toString())).join('/');
+    QDir d = Context::instance().databasePath();
+    if (!d.cd(path))
+    {
+        if (!d.mkpath(path))
+        {
+            qDebug() << "Can't create path" << path;
+            return false;
+        }
+        if (!d.cd(path))
+        {
+            qDebug() << "Can't move to path" << path;
+            return false;
+        }
+    }
+    QFile f(d.absoluteFilePath(o["hash"].toString()));
+    if (!f.open(QIODevice::WriteOnly))
+    {
+        qDebug() << "Can't create file" << path;
+        return false;
+    }
+    QJsonDocument j(o);
+    f.write(j.toJson(QJsonDocument::Compact));
+    f.close();
+    return true;
 }
 
 bool BlockChain::contains(Hash h)
@@ -60,7 +92,7 @@ QStringList BlockChain::getPathFromHash(Hash h)
 {
     QStringList ret;
     QString sHash = h.toString();
-    for (int i = 0; i < 20; i += 2)
+    for (int i = 0; i < 0; i += 2)
     {
         ret << sHash.mid(i, 2);
     }

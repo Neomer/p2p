@@ -30,6 +30,7 @@ public:
         return m_previousBlock;
     }
     
+    
 public slots:
     void setNumber(quint32 number)
     {

@@ -32,7 +32,14 @@ int main(int argc, char *argv[])
     }
     
     BlockChain chain;
-    qDebug() << chain.contains(Hash::randomHash());
+    Block b;
+    for (int i = 0; i < 10000; i++)
+    {
+        b.setData("testtest___SDFs-DS__SD -SAFDLAKSf _)A Fasflk");
+        b.setNumber(i);
+        b.setPreviousBlock(Hash::randomHash());
+        chain.save(&b);
+    }
     
     HttpResponse resp(HttpManager::getPage(QUrl("http://api.sypexgeo.net/")));
     QJsonParseError err;

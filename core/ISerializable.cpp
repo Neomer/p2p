@@ -25,7 +25,7 @@ QJsonObject ISerializable::serialize(bool hashed)
     for (int idx = o->propertyOffset(); idx < o->propertyCount(); ++idx)
     {
         QMetaProperty p = o->property(idx);
-        if (!p.isReadable())
+        if (!p.isReadable() || !p.isStored())
         {
             continue;
         }
