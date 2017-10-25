@@ -1,6 +1,8 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
+#include <QDateTime>
+
 #include <core/ISerializable.h>
 #include <core/Hash.h>
 
@@ -11,6 +13,7 @@ class Block : public ISerializable
     Q_PROPERTY(quint32 number READ getNumber WRITE setNumber)
     Q_PROPERTY(QString data READ getData WRITE setData)
     Q_PROPERTY(QString previousBlock READ getPreviousBlock WRITE setPreviousBlock)
+    Q_PROPERTY(QDateTime creationTime READ creationTime WRITE setCreationTime)
     
 public:
     Block(QObject *parent = 0);
@@ -30,6 +33,11 @@ public:
         return m_previousBlock;
     }
     
+    
+    QDateTime creationTime() const
+    {
+        return m_creationTime;
+    }
     
 public slots:
     void setNumber(quint32 number)
@@ -52,10 +60,16 @@ public slots:
         m_previousBlock = hash.toString();
     }
     
+    void setCreationTime(QDateTime creationTime)
+    {
+        m_creationTime = creationTime;
+    }
+    
 private:
     quint32 m_number;
     QString m_data;
     QString m_previousBlock;
+    QDateTime m_creationTime;
 };
 
 #endif // BLOCK_H

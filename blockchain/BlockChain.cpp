@@ -12,7 +12,7 @@ void BlockChain::load()
     
 }
 
-bool BlockChain::find(Hash h, Block *b)
+bool BlockChain::find(Block *b, Hash h)
 {
     QString path = getPathFromHash(h).join('/');
     QDir d = Context::instance().databasePath();

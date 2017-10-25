@@ -17,7 +17,7 @@ public:
     ISerializable(QObject *parent = 0);
     
     virtual QJsonObject serialize(bool hashed = true);
-    virtual void deserialize(QJsonObject object);
+    virtual bool deserialize(QJsonObject object);
     
     static QJsonValue toJsonValue(QVariant value);
     static QVariant fromJsonValue(QJsonValue value);

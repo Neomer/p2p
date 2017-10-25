@@ -41,9 +41,42 @@ QJsonObject ISerializable::serialize(bool hashed)
     return ret;
 }
 
-void ISerializable::deserialize(QJsonObject object)
+bool ISerializable::deserialize(QJsonObject object)
 {
+    const QMetaObject *o = this->metaObject();
+    if (!o)
+    {
+        qDebug() << "Meta object creation failed!";
+        return false;
+    }
+    for (int idx = o->propertyOffset(); idx < o->propertyCount(); ++idx)
+    {
+        QMetaProperty p = o->property(idx);
+        if (!object.contains(QString(p.name())))
+        {
+            continue;
+        }
+        if (!p.isWritable() || !p.isStored())
+        {
+            continue;
+        }
+        if (!p.write(this, ISerializable::fromJsonValue(object[QString(p.name())])))
+        {
+            qDebug() << "Property value didn't set!";
+        }
+    }
     
+    if (object.contains("hash"))
+    {
+        Hash h = object.take("hash").toString();
+        Hash hObj = Hash::hash(object);
+        if (h != hObj)
+        {
+            qDebug() << "Hashes not equal!" << h.toString() << hObj.toString();
+            return false;
+        }
+    }
+    return true;
 }
 
 QJsonValue ISerializable::toJsonValue(QVariant value)
@@ -61,7 +94,7 @@ QJsonValue ISerializable::toJsonValue(QVariant value)
             return value.toBool();
            
         case QVariant::DateTime:
-            return value.toDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz t");
+            return value.toDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz");
             
         case QVariant::Date:
             return value.toDate().toString("yyyy-MM-dd");

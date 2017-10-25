@@ -13,7 +13,7 @@ public:
     BlockChain();
     
     void load();
-    bool find(Hash h, Block *b);
+    bool find(Block *b, Hash h);
     bool save(Block *b);
     bool contains(Hash h);
     
