@@ -15,6 +15,7 @@ class Block : public ISerializable
     Q_PROPERTY(QString previousBlock READ getPreviousBlock WRITE setPreviousBlock)
     Q_PROPERTY(QDateTime creationTime READ creationTime WRITE setCreationTime)
     Q_PROPERTY(int nonce READ getNonce WRITE setNonce)
+    Q_PROPERTY(bool confirmed READ getConfirmed WRITE setConfirmed STORED false)
     
 public:
     Block(QObject *parent = 0);
@@ -43,6 +44,11 @@ public:
     int getNonce() const
     {
         return m_nonce;
+    }
+    
+    bool getConfirmed() const
+    {
+        return m_confirmed;
     }
     
 public slots:
@@ -76,12 +82,18 @@ public slots:
         m_nonce = nonce;
     }
     
+    void setConfirmed(bool confirmed)
+    {
+        m_confirmed = confirmed;
+    }
+    
 private:
     quint32 m_number;
     QString m_data;
     QString m_previousBlock;
     QDateTime m_creationTime;
     int m_nonce;
+    bool m_confirmed;
 };
 
 #endif // BLOCK_H

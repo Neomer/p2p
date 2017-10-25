@@ -6,9 +6,14 @@
 #include <core/Context.h>
 #include <blockchain/BlockChainIndex.h>
 #include <blockchain/Block.h>
+#include <core/ISerializable.h>
 
-class BlockChain
+class BlockChain: public ISerializable
 {
+    Q_OBJECT
+    
+    Q_PROPERTY(quint64 lastBlockNumber READ getLastBlockNumber WRITE setLastBlockNumber)
+    
 public:
     static BlockChain &instance()
     {
@@ -17,10 +22,22 @@ public:
     }
     
     void load();
+    
     bool find(Block *b, Hash h);
-    bool save(Block *b);
+    bool appendBlock(Block *b);
     bool contains(Hash h);
     
+    
+    quint64 getLastBlockNumber() const
+    {
+        return m_lastBlockNumber;
+    }
+    
+public slots:
+    void setLastBlockNumber(quint64 lastBlockNumber)
+    {
+        m_lastBlockNumber = lastBlockNumber;
+    }
     
 private:
     BlockChain();
@@ -28,6 +45,7 @@ private:
     BlockChain &operator =(const BlockChain& other);
     
     QStringList getPathFromHash(Hash h);
+    quint64 m_lastBlockNumber;
 };
 
 #endif // BLOCKCHAIN_H

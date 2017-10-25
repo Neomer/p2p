@@ -32,21 +32,35 @@ int main(int argc, char *argv[])
         return -1;
     }
     
+    try
+    {
+        BlockChain::instance().load();
+    }
+    catch(std::exception &e)
+    {
+        qDebug() << "Block-Chain initialisation failed!" << e.what();
+        return -1;
+    }
+    
+    
     Block b;
     b.setData("Initial block!");
     b.setNumber(0);
     b.setPreviousBlock(Hash(""));
+    b.setConfirmed(false);
     Worker w(&a);
     w.addBlock(&b);
     
-    
-//    for (int i = 0; i < 10; i++)
-//    {
-//        b.setData("testtest___SDFs-DS__SD -SAFDLAKSf _)A Fasflk");
-//        b.setNumber(i);
-//        b.setPreviousBlock(Hash::randomHash());
-//        chain.save(&b);
-//    }
+    for (int i = 1; i < 3; i++)
+    {
+        while (!b.getConfirmed());
+        Hash h = Hash::hash(&b);
+        b.setData(Hash::randomHash().toString());
+        b.setNumber(i);
+        b.setPreviousBlock(h.toString());
+        b.setConfirmed(false);
+        w.addBlock(&b);
+    }
     
     HttpResponse resp(HttpManager::getPage(QUrl("http://api.sypexgeo.net/")));
     QJsonParseError err;

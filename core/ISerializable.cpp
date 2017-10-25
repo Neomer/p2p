@@ -4,6 +4,7 @@
 #include <QMetaProperty>
 #include <QDateTime>
 #include <QCryptographicHash>
+#include <QFile>
 #include "core/Hash.h"
 
 ISerializable::ISerializable(QObject *parent) : 
@@ -124,4 +125,14 @@ QVariant ISerializable::fromJsonValue(QJsonValue value)
         default:
             return QVariant();
     }
+}
+
+void ISerializable::save(QString filename, QJsonObject object)
+{
+    QFile file(filename);
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        throw std::runtime_error("File access denied!");
+    }
+    file.write(QJsonDocument(object).toJson());
 }

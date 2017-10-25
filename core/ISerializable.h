@@ -21,6 +21,8 @@ public:
     
     static QJsonValue toJsonValue(QVariant value);
     static QVariant fromJsonValue(QJsonValue value);
+    
+    static void save(QString filename, QJsonObject object);
 };
 
 #endif // SERIALIZE_H

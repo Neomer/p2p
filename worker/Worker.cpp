@@ -46,10 +46,11 @@ void Worker::run()
                 {
                     b->setNonce(_nonce);
                     QJsonObject o = b->serialize();
-                    if (Hash(o["hash"].toString()) < Hash("000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"))
+                    if (Hash(o["hash"].toString()) < Hash("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"))
                     {
                         //emit blockGenerated(b);
-                        BlockChain::instance().save(b);
+                        b->setConfirmed(true);
+                        BlockChain::instance().appendBlock(b);
                         break;
                     }
                 }

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QJsonObject>
+#include <core/ISerializable.h>
 
 class Hash : public QObject
 {
@@ -31,6 +32,7 @@ public:
     QString toString() { return QString::fromUtf8(_hash.toHex()); }
     
     static Hash hash(const QJsonObject &object);
+    static Hash hash(ISerializable *object);
     
     bool operator ==(const Hash &other);
     bool operator ==(QByteArray hash);

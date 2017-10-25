@@ -9,7 +9,23 @@ BlockChain::BlockChain()
 
 void BlockChain::load()
 {
-    
+    QFile f(Context::instance().databasePath().absoluteFilePath("DB"));
+    if (f.exists())
+    {
+        if (!f.open(QIODevice::ReadOnly))
+        {
+            throw std::runtime_error("Database file is locked!");
+        }
+        QJsonParseError err;
+        QJsonDocument j = QJsonDocument::fromJson(f.readAll(), &err);
+        if (err.error != QJsonParseError::NoError)
+        {
+            qDebug() << "Json parsing error!" << err.errorString();
+            throw std::runtime_error("Json parsing error!");
+        }
+        ISerializable::deserialize(j.object());
+        f.close();
+    }
 }
 
 bool BlockChain::find(Block *b, Hash h)
@@ -40,8 +56,14 @@ bool BlockChain::find(Block *b, Hash h)
     return true;
 }
 
-bool BlockChain::save(Block *b)
+bool BlockChain::appendBlock(Block *b)
 {
+    if (!contains(b->getPreviousBlock()))
+    {
+        qDebug() << "Previous block not found!" << b->getPreviousBlock();
+        return false;
+    }
+
     QJsonObject o = b->serialize();
     
     if (contains(o["hash"].toString()))
@@ -72,8 +94,11 @@ bool BlockChain::save(Block *b)
         return false;
     }
     QJsonDocument j(o);
-    f.write(j.toJson(QJsonDocument::Compact));
+    f.write(j.toJson(QJsonDocument::Indented));
     f.close();
+    
+    setLastBlockNumber(b->getNumber());
+    ISerializable::save(Context::instance().databasePath().absoluteFilePath("DB"), ISerializable::serialize(false));
     return true;
 }
 

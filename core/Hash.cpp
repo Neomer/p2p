@@ -45,6 +45,11 @@ Hash Hash::hash(const QJsonObject &object)
     return Hash(QCryptographicHash::hash(json.toJson(QJsonDocument::Compact), QCryptographicHash::Sha512));
 }
 
+Hash Hash::hash(ISerializable *object)
+{
+    return Hash::hash(object->serialize(false));
+}
+
 bool Hash::operator ==(const Hash &other)
 {
     return _hash == other._hash;
