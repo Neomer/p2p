@@ -14,6 +14,7 @@ class Block : public ISerializable
     Q_PROPERTY(QString data READ getData WRITE setData)
     Q_PROPERTY(QString previousBlock READ getPreviousBlock WRITE setPreviousBlock)
     Q_PROPERTY(QDateTime creationTime READ creationTime WRITE setCreationTime)
+    Q_PROPERTY(int nonce READ getNonce WRITE setNonce)
     
 public:
     Block(QObject *parent = 0);
@@ -37,6 +38,11 @@ public:
     QDateTime creationTime() const
     {
         return m_creationTime;
+    }
+    
+    int getNonce() const
+    {
+        return m_nonce;
     }
     
 public slots:
@@ -65,11 +71,17 @@ public slots:
         m_creationTime = creationTime;
     }
     
+    void setNonce(int nonce)
+    {
+        m_nonce = nonce;
+    }
+    
 private:
     quint32 m_number;
     QString m_data;
     QString m_previousBlock;
     QDateTime m_creationTime;
+    int m_nonce;
 };
 
 #endif // BLOCK_H

@@ -10,7 +10,11 @@
 class BlockChain
 {
 public:
-    BlockChain();
+    static BlockChain &instance()
+    {
+        static BlockChain i;
+        return i;
+    }
     
     void load();
     bool find(Block *b, Hash h);
@@ -19,6 +23,10 @@ public:
     
     
 private:
+    BlockChain();
+    BlockChain(const BlockChain& other);
+    BlockChain &operator =(const BlockChain& other);
+    
     QStringList getPathFromHash(Hash h);
 };
 

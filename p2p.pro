@@ -34,7 +34,8 @@ SOURCES += main.cpp \
     core/ISerializable.cpp \
     blockchain/Block.cpp \
     blockchain/BlockChainIndex.cpp \
-    blockchain/BlockChain.cpp
+    blockchain/BlockChain.cpp \
+    worker/Worker.cpp
 
 HEADERS += \
     Gateway.h \
@@ -56,7 +57,8 @@ HEADERS += \
     core/ISerializable.h \
     blockchain/Block.h \
     blockchain/BlockChainIndex.h \
-    blockchain/BlockChain.h
+    blockchain/BlockChain.h \
+    worker/Worker.h
 
 INCLUDEPATH += $PWD
 

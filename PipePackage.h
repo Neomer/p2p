@@ -7,7 +7,7 @@
 #define PACKAGE_COMMAND_PING_RESPONSE        0x0001
 #define PACKAGE_COMMAND_SHARE_REQUEST        0x0002 // share nodes
 #define PACKAGE_COMMAND_SHARE_RESPONSE       0x0003
-#define PACKAGE_COMMAND_NEW_BLOCK            0x0f00
+#define PACKAGE_COMMAND_NEW_BLOCK            0xf000
 #define PACKAGE_COMMAND_TEST_MESSAGE         0xffff
 
 class PipePackage

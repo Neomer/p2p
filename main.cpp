@@ -16,6 +16,7 @@
 
 #include "blockchain/Block.h"
 #include <blockchain/BlockChain.h>
+#include <worker/Worker.h>
 
 int main(int argc, char *argv[])
 {
@@ -31,9 +32,14 @@ int main(int argc, char *argv[])
         return -1;
     }
     
-    BlockChain chain;
     Block b;
-    chain.find(&b, Hash("fc7155212d208e281709491b7140d4f74e9b49c439870d5e0cf9f8f4dd7a0107fceb158fd83769c43d66c523fc64bae314ee59527db7b25efb9e057aa2987238"));
+    b.setData("Initial block!");
+    b.setNumber(0);
+    b.setPreviousBlock(Hash(""));
+    Worker w(&a);
+    w.addBlock(&b);
+    
+    
 //    for (int i = 0; i < 10; i++)
 //    {
 //        b.setData("testtest___SDFs-DS__SD -SAFDLAKSf _)A Fasflk");
