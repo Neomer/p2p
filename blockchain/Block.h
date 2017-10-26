@@ -16,6 +16,7 @@ class Block : public ISerializable
     Q_PROPERTY(QDateTime creationTime READ creationTime WRITE setCreationTime)
     Q_PROPERTY(int nonce READ getNonce WRITE setNonce)
     Q_PROPERTY(bool confirmed READ getConfirmed WRITE setConfirmed STORED false)
+    Q_PROPERTY(int version READ getVersion WRITE setVersion)
     
 public:
     Block(QObject *parent = 0);
@@ -49,6 +50,11 @@ public:
     bool getConfirmed() const
     {
         return m_confirmed;
+    }
+    
+    int getVersion() const
+    {
+        return m_version;
     }
     
 public slots:
@@ -87,6 +93,11 @@ public slots:
         m_confirmed = confirmed;
     }
     
+    void setVersion(int version)
+    {
+        m_version = version;
+    }
+    
 private:
     quint32 m_number;
     QString m_data;
@@ -94,6 +105,7 @@ private:
     QDateTime m_creationTime;
     int m_nonce;
     bool m_confirmed;
+    int m_version;
 };
 
 #endif // BLOCK_H

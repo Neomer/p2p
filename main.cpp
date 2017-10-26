@@ -17,6 +17,7 @@
 #include "blockchain/Block.h"
 #include <blockchain/BlockChain.h>
 #include <worker/Worker.h>
+#include <worker/Miner.h>
 
 int main(int argc, char *argv[])
 {
@@ -25,6 +26,7 @@ int main(int argc, char *argv[])
     try
     {
         Context::instance().load();
+        Context::instance().miner = new Miner(1, &a);
     }
     catch(std::exception &e)
     {
@@ -42,25 +44,6 @@ int main(int argc, char *argv[])
         return -1;
     }
     
-    
-    Block b;
-    b.setData("Initial block!");
-    b.setNumber(0);
-    b.setPreviousBlock(Hash(""));
-    b.setConfirmed(false);
-    Worker w(&a);
-    w.addBlock(&b);
-    
-    for (int i = 1; i < 3; i++)
-    {
-        while (!b.getConfirmed());
-        Hash h = Hash::hash(&b);
-        b.setData(Hash::randomHash().toString());
-        b.setNumber(i);
-        b.setPreviousBlock(h.toString());
-        b.setConfirmed(false);
-        w.addBlock(&b);
-    }
     
     HttpResponse resp(HttpManager::getPage(QUrl("http://api.sypexgeo.net/")));
     QJsonParseError err;

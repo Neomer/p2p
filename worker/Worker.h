@@ -14,6 +14,11 @@ public:
     explicit Worker(QObject *parent = nullptr);
     
     void addBlock(Block *b);
+    void stopWork();
+    
+    bool isStopped() { return _stopped; }
+    
+    double hps();
     
 signals:
     void blockGenerated(Block *);
@@ -29,6 +34,7 @@ private:
     QTimer *_tmrHashrate;
     qint64 _tt;
     quint64 _nonce, _nonceSave;
+    bool _stop, _stopped;
 };
 
 #endif // WORKER_H

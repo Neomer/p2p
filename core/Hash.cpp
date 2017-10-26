@@ -97,12 +97,37 @@ bool Hash::operator >(QString hash)
 
 bool Hash::operator <(const Hash &other)
 {
-    return _hash < other._hash;
+    return memcmp(_hash.constData(), other._hash.constData(), qMin(_hash.count(), other._hash.count())) < 0;
+    if (_hash.count() < other._hash.count())
+    {
+        return true;
+    }
+    if (_hash.count() > other._hash.count())
+    {
+        return false;
+    }
+    for (int i = 0; i < _hash.count(); i++)
+    {
+        if ((int)_hash.at(i) < (int)other._hash.at(i))
+        {
+            return true;
+        }
+        else if ((int)_hash.at(i) > (int)other._hash.at(i))
+            return false;
+    }
+    return false;
 }
 
 bool Hash::operator <(QByteArray hash)
 {
-    return _hash < hash;
+    for (int i = _hash.count() - 1; i > 0; i--)
+    {
+        if (_hash.at(i) < hash.at(i))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 bool Hash::operator <(QString hash)

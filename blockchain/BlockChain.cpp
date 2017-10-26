@@ -98,6 +98,7 @@ bool BlockChain::appendBlock(Block *b)
     f.close();
     
     setLastBlockNumber(b->getNumber());
+    setLastBlockHash(o["hash"].toString());
     ISerializable::save(Context::instance().databasePath().absoluteFilePath("DB"), ISerializable::serialize(false));
     return true;
 }
@@ -122,4 +123,19 @@ QStringList BlockChain::getPathFromHash(Hash h)
         ret << sHash.mid(i, 2);
     }
     return ret;
+}
+
+bool BlockChain::onEventCatch(void *bus, QString event, QVariant data)
+{
+    if (bus == &(Context::instance().busNetwork))
+    {
+    }
+    else if (bus == &(Context::instance().busMain))
+    {
+        if (event == "block.new")
+        {
+            Block *b = (Block *)data.toInt();
+            save(b->serialize()["hash"].toString(), b->serialize());
+        }
+    }
 }

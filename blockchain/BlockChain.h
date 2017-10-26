@@ -7,12 +7,14 @@
 #include <blockchain/BlockChainIndex.h>
 #include <blockchain/Block.h>
 #include <core/ISerializable.h>
+#include <core/IEventDispatcher.h>
 
-class BlockChain: public ISerializable
+class BlockChain: public ISerializable, public IEventDispatcher
 {
     Q_OBJECT
     
     Q_PROPERTY(quint64 lastBlockNumber READ getLastBlockNumber WRITE setLastBlockNumber)
+    Q_PROPERTY(QString lastBlockHash READ getLastBlockHash WRITE setLastBlockHash)
     
 public:
     static BlockChain &instance()
@@ -33,10 +35,20 @@ public:
         return m_lastBlockNumber;
     }
     
+    QString getLastBlockHash() const
+    {
+        return m_lastBlockHash;
+    }
+    
 public slots:
     void setLastBlockNumber(quint64 lastBlockNumber)
     {
         m_lastBlockNumber = lastBlockNumber;
+    }
+    
+    void setLastBlockHash(QString lastBlockHash)
+    {
+        m_lastBlockHash = lastBlockHash;
     }
     
 private:
@@ -46,6 +58,11 @@ private:
     
     QStringList getPathFromHash(Hash h);
     quint64 m_lastBlockNumber;
+    QString m_lastBlockHash;
+    
+    // IEventDispatcher interface
+public:
+    bool onEventCatch(void *bus, QString event, QVariant data);
 };
 
 #endif // BLOCKCHAIN_H

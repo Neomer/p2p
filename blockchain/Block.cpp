@@ -6,7 +6,8 @@ Block::Block(QObject *parent) :
     m_number(0),
     m_data(""),
     m_nonce(0),
-    m_confirmed(false)
+    m_confirmed(false),
+    m_version(1)
 {
     
 }
