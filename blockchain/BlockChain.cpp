@@ -26,6 +26,8 @@ void BlockChain::load()
         ISerializable::deserialize(j.object());
         f.close();
     }
+    
+    Context::instance().busMain.subscribe("block.new", this);
 }
 
 bool BlockChain::find(Block *b, Hash h)
