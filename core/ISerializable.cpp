@@ -134,5 +134,10 @@ void ISerializable::save(QString filename, QJsonObject object)
     {
         throw std::runtime_error("File access denied!");
     }
-    file.write(QJsonDocument(object).toJson());
+	file.write(QJsonDocument(object).toJson());
+}
+
+QByteArray ISerializable::prepareForSocket(QJsonObject object)
+{
+	return QJsonDocument(object).toJson(QJsonDocument::Compact);
 }

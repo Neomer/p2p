@@ -13,16 +13,16 @@
 class PipePackage
 {
 public:
-    PipePackage(short command, QByteArray data = QByteArray());
+    PipePackage(unsigned short command, QByteArray data = QByteArray());
     PipePackage(QByteArray data);
 
     bool isValid() { return true; }
-    short command() { return _cmd; }
+    unsigned short command() { return _cmd; }
     QByteArray data() { return _data; }
     QByteArray rawData() { return _raw; }
 
 private:
-    short _cmd;
+    unsigned short _cmd;
     QByteArray _data, _raw;
 };
 

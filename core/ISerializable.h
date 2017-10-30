@@ -23,6 +23,7 @@ public:
     static QVariant fromJsonValue(QJsonValue value);
     
     static void save(QString filename, QJsonObject object);
+	static QByteArray prepareForSocket(QJsonObject object);
 };
 
 #endif // SERIALIZE_H

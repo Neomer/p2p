@@ -89,6 +89,7 @@ bool BlockChain::appendBlock(Block *b)
             return false;
         }
     }
+//	/qDebug() << d.absolutePath();
     QFile f(d.absoluteFilePath(o["hash"].toString()));
     if (!f.open(QIODevice::WriteOnly))
     {
@@ -129,6 +130,7 @@ QStringList BlockChain::getPathFromHash(Hash h)
 
 bool BlockChain::onEventCatch(void *bus, QString event, QVariant data)
 {
+	//qDebug() << event << data;
     if (bus == &(Context::instance().busNetwork))
     {
     }
@@ -137,7 +139,9 @@ bool BlockChain::onEventCatch(void *bus, QString event, QVariant data)
         if (event == "block.new")
         {
             Block *b = (Block *)data.toInt();
-            save(b->serialize()["hash"].toString(), b->serialize());
+            BlockChain::appendBlock(b);
+			return true;
         }
     }
+	return false;
 }

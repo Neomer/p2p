@@ -1,13 +1,16 @@
 #include "PipeController.h"
 #include "core/CommandProvider.h"
 #include "Global.h"
+#include <core/Context.h>
 
 PipeController::PipeController(Gateway *gateway, QObject *parent) :
     QThread(parent)
 {
     connect(gateway, SIGNAL(pipeOpened(Pipe*)), this, SLOT(addPipe(Pipe*)));
     CommandProvider::instance().registerCommand(this, "pipe");
-    
+	Context::instance().busMain.subscribe("block.new", this);
+	
+	
     start(Priority::LowPriority);
 }
 
@@ -27,7 +30,7 @@ void PipeController::send(PipePackage data)
 
 void PipeController::addPipe(Pipe *pipe)
 {
-    qDebug() << "New pipe" << (int)pipe;
+    qDebug() << "New pipe" << (qint64)pipe;
     _pipeList << pipe;
     //pipe->moveToThread(this);
     connect(pipe, SIGNAL(dataReceived(PipePackage)), this, SLOT(pipePackage(PipePackage)));
@@ -99,8 +102,34 @@ void PipeController::pipePackage(PipePackage pkg)
         data.append(ip + ";");
         send(PipePackage(PACKAGE_COMMAND_SHARE_RESPONSE, data.toUtf8()));
     }
-    else
+	else if (pkg.command() == PACKAGE_COMMAND_NEW_BLOCK)
+	{
+		qDebug() << "New block received!";
+	}
+	else
     {
         emit pipeCommand(QString::fromUtf8(pkg.data()));
+	}
+}
+
+void PipeController::sendBlock(Block *block)
+{
+	send(PipePackage(PACKAGE_COMMAND_NEW_BLOCK, ISerializable::prepareForSocket(block->serialize())));
+}
+
+bool PipeController::onEventCatch(void *bus, QString event, QVariant data)
+{
+	if (bus == &(Context::instance().busNetwork))
+    {
     }
+    else if (bus == &(Context::instance().busMain))
+    {
+        if (event == "block.new")
+        {
+            Block *b = (Block *)data.toInt();
+			this->sendBlock(b);
+			return true;
+        }
+    }
+	return false;
 }

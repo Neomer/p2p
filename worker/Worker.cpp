@@ -28,7 +28,7 @@ void Worker::stopWork()
 
 double Worker::hps()
 {
-    qint64 ss = QDateTime::currentSecsSinceEpoch();
+    qint64 ss = QDateTime::currentMSecsSinceEpoch() * 0.001;
     return (_nonce - _nonceSave) / (ss - _tt);
     _nonceSave = _nonce;
     _tt = ss;
@@ -36,7 +36,7 @@ double Worker::hps()
 
 void Worker::tick()
 {
-    qint64 ss = QDateTime::currentSecsSinceEpoch();
+    qint64 ss = QDateTime::currentMSecsSinceEpoch() * 0.001;
     if (_nonce - _nonceSave > 0)
     {
         qDebug() << "Hashrate:" << (_nonce - _nonceSave) / (ss - _tt) << "h/s";
@@ -52,7 +52,7 @@ void Worker::run()
     {
         if (!_blocks.isEmpty())
         {
-            _tt = QDateTime::currentSecsSinceEpoch();
+            _tt = QDateTime::currentMSecsSinceEpoch() * 0.001;
             Block *b = _blocks.takeFirst();
             _stopped = false;
             qDebug() << "Block" << b->getNumber() << "began to be mined...";

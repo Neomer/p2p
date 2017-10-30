@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
         qDebug() << "Block-Chain initialisation failed!" << e.what();
         return -1;
     }
+	
     
     
     HttpResponse resp(HttpManager::getPage(QUrl("http://api.sypexgeo.net/")));
@@ -53,7 +54,7 @@ int main(int argc, char *argv[])
         qDebug() <<"Json parsing error" << err.errorString() <<  "near" << resp.body().mid(err.offset, 5);
     }
     Context::instance().setIp(json.object()["ip"].toString());
-    qDebug() << "My ip:" << Context::instance().getIp();
+    qDebug() << "Public ip:" << Context::instance().getIp();
 
     QDir dir(a.applicationDirPath());
     QSettings settings(dir.absoluteFilePath("p2p.conf"), QSettings::IniFormat);
@@ -64,6 +65,7 @@ int main(int argc, char *argv[])
     Context::instance().messageController = new MessageController(&a);
 
     CommandProvider::instance();
+	Context::instance().miner->startMine();
 
     Context::instance().pipeController->addPipe(new Pipe(settings.value("net/connect", "127.0.0.1").toString()));
 

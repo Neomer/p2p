@@ -13,6 +13,7 @@ QDir Context::appDataPath()
 
 void Context::load()
 {
+	qDebug() << appDataPath().absolutePath();
     if (!appDataPath().exists("db"))
     {
         if (!appDataPath().mkpath("db"))

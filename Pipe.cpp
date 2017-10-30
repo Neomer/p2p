@@ -1,5 +1,5 @@
 #include "Pipe.h"
-
+#include <cstdint>
 
 Pipe::Pipe(QTcpSocket *socket, QObject *parent) :
     QObject(parent),
@@ -12,7 +12,7 @@ Pipe::Pipe(QTcpSocket *socket, QObject *parent) :
     connect(_socket, SIGNAL(readyRead()), this ,SLOT(readData()));
     connect(_pingTimer, SIGNAL(timeout()), this, SLOT(ping()));
 
-    _pingTimer->setInterval(10000);
+    _pingTimer->setInterval(30000);
     _pingTimer->start();
 
     if (isClosed()) open();
@@ -74,13 +74,13 @@ bool Pipe::open()
 
 void Pipe::send(PipePackage data)
 {
-    qDebug() << "Pipe" << (int)this << "send to" << _socket->peerAddress().toString() << data.rawData().count() << "byte(s)";
+    qDebug() << "Pipe" << (qint64)this << "send to" << _socket->peerAddress().toString() << data.rawData().count() << "byte(s)";
     _socket->write(data.rawData());
 }
 
 void Pipe::ping()
 {
-    qDebug() << "Pipe" << (int)this << "send ping request";
+    qDebug() << "Pipe" << (qint64)this << "send ping request";
     PipePackage resp(PACKAGE_COMMAND_PING_REQUEST);
     if (isClosed()) open();
     _socket->write(resp.rawData());
@@ -97,7 +97,7 @@ void Pipe::readData()
     }
     if (pkg.command() == PACKAGE_COMMAND_PING_REQUEST)
     {
-        qDebug() << "Pipe" << (int)this << "receive ping request";
+        qDebug() << "Pipe" << (qint64)this << "receive ping request";
         PipePackage resp(PACKAGE_COMMAND_PING_RESPONSE);
         _lastActive = QDateTime::currentDateTime();
         send(resp.rawData());
@@ -105,13 +105,13 @@ void Pipe::readData()
     }
     else if (pkg.command() == PACKAGE_COMMAND_PING_RESPONSE)
     {
-        qDebug() << "Pipe" << (int)this << "receive ping response";
+        qDebug() << "Pipe" << (qint64)this << "receive ping response";
         _lastActive = QDateTime::currentDateTime();
         _connectionsFails = 0;
     }
     else
     {
-        qDebug() << "Pipe" << (int)this << "received from" << _socket->peerAddress().toString() << "command" << pkg.command();
+        qDebug() << "Pipe" << (qint64)this << "received from" << _socket->peerAddress().toString() << "command" << pkg.command();
         emit dataReceived(pkg);
     }
 }

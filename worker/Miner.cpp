@@ -35,7 +35,7 @@ void Miner::blockFound(Block *b)
         w->stopWork();
         while (!w->isStopped());
     }
-    Context::instance().busMain.publish("block.new", QVariant::fromValue((int)b));
+    Context::instance().busMain.publish("block.new", QVariant::fromValue((qint64)b));
     emit blockMined(b);
     startMine();
 }

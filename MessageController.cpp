@@ -9,6 +9,7 @@ MessageController::MessageController(QObject *parent) :
     connect(Context::instance().keyLogger, SIGNAL(command(QString)), this, SLOT(addCommand(QString)));
     connect(Context::instance().pipeController, SIGNAL(pipeCommand(QString)), this, SLOT(addRemoteCommand(QString)));
 
+	
     start();
 }
 
@@ -36,12 +37,15 @@ void MessageController::addRemoteCommand(QString message)
         return;
 
     _history << ba;
+	
+	
+	
     std::cout << "Message received: " << message.toUtf8().constData() << "\n";
     if (Context::instance().pipeController)
     {
         PipePackage pkg(PACKAGE_COMMAND_TEST_MESSAGE, message.toUtf8());
         Context::instance().pipeController->send(pkg);
-    }
+	}
 }
 
 void MessageController::run()
@@ -62,4 +66,11 @@ void MessageController::run()
 
         msleep(1000);
     }
+}
+
+
+bool MessageController::onEventCatch(void *bus, QString event, QVariant data)
+{
+	Q_UNUSED(bus); Q_UNUSED(event); Q_UNUSED(data);
+	return false;
 }
