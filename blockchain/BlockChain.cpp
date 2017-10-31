@@ -103,6 +103,7 @@ bool BlockChain::appendBlock(Block *b)
     setLastBlockNumber(b->getNumber());
     setLastBlockHash(o["hash"].toString());
     ISerializable::save(Context::instance().databasePath().absoluteFilePath("DB"), ISerializable::serialize(false));
+	updateDifficulty();
     return true;
 }
 
@@ -130,14 +131,19 @@ QStringList BlockChain::getPathFromHash(Hash h)
 
 void BlockChain::updateDifficulty()
 {
+	if (getLastBlockNumber() <= 5)
+	{
+		return;
+	}
+	
 	double avg_interval = 0;
 	float idx_table[5] = {0.30f, 0.25f, 0.20f, 0.15f, 0.10f};
-	QDateTime time = QDateTime::currentDateTime();
 	Block b, b1;
 	if (!find(&b, getLastBlockHash()))
 	{
 		throw std::runtime_error("Block-chain is corrupted!");
 	}
+	QDateTime time = time = b.getCreationTime();
 	
 	for (int i = 0; i < 5; i++)
 	{
@@ -146,7 +152,7 @@ void BlockChain::updateDifficulty()
 			throw std::runtime_error("Block-chain is corrupted!");
 		}
 		b = b1;
-		time = b.getCreationTime();
+		avg_interval += b1.getCreationTime().secsTo(b.getCreationTime()) * idx_table[i];
 	}
 }
 
@@ -160,7 +166,7 @@ bool BlockChain::onEventCatch(void *bus, QString event, QVariant data)
     {
         if (event == "block.new")
         {
-            Block *b = (Block *)data.toInt();
+            Block *b = (Block *)(qint64)data.toInt();
             BlockChain::appendBlock(b);
 			return true;
         }
