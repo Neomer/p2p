@@ -6,6 +6,7 @@
 #include <QTimer>
 
 #include <blockchain/Block.h>
+#include <worker/Work.h>
 
 class Worker : public QThread
 {
@@ -15,6 +16,7 @@ public:
     
     void addBlock(Block *b);
     void stopWork();
+	void createWork(Work work);
     
     bool isStopped() { return _stopped; }
     
@@ -30,7 +32,7 @@ protected:
     void run();
     
 private:
-    QList<Block *> _blocks;
+    QList<Work> _blocks;
     QTimer *_tmrHashrate;
     qint64 _tt;
     quint64 _nonce, _nonceSave;

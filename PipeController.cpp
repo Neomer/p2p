@@ -2,6 +2,7 @@
 #include "core/CommandProvider.h"
 #include "Global.h"
 #include <core/Context.h>
+#include <blockchain/BlockChain.h>
 
 PipeController::PipeController(Gateway *gateway, QObject *parent) :
     QThread(parent)
@@ -105,6 +106,26 @@ void PipeController::pipePackage(PipePackage pkg)
 	else if (pkg.command() == PACKAGE_COMMAND_NEW_BLOCK)
 	{
 		qDebug() << "New block received!";
+		Block b;
+		QJsonParseError err;
+		QJsonDocument json = QJsonDocument::fromJson(pkg.data(), &err);
+		if (err.error != QJsonParseError::NoError)
+		{
+			qDebug() << "Json parsing error!";
+			return;
+		}
+		if (!b.deserialize(json.object()))
+		{
+			qDebug() << "Block is corrupted!";
+			return;
+		}
+		if (BlockChain::instance().contains(json.object()["hash"].toString()))
+		{
+			qDebug() << "Block already exists!";
+			return;
+		}
+		qDebug() << "Create block" << b.getNumber() << "...";
+		BlockChain::instance().appendBlock(&b);
 	}
 	else
     {

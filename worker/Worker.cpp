@@ -68,7 +68,7 @@ void Worker::run()
                     }
                     
                     jo["nonce"] = ISerializable::toJsonValue(_nonce);
-                    if (Hash::hash(jo) < Hash("000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"))
+                    if (Hash::hash(jo) < Hash("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"))
                     {
                         //emit blockGenerated(b);
                         b->setNonce(_nonce);

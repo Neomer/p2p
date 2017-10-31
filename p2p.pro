@@ -36,7 +36,8 @@ SOURCES += main.cpp \
     blockchain/BlockChainIndex.cpp \
     blockchain/BlockChain.cpp \
     worker/Worker.cpp \
-    worker/Miner.cpp
+    worker/Miner.cpp \
+    worker/Work.cpp
 
 HEADERS += \
     Gateway.h \
@@ -60,7 +61,8 @@ HEADERS += \
     blockchain/BlockChainIndex.h \
     blockchain/BlockChain.h \
     worker/Worker.h \
-    worker/Miner.h
+    worker/Miner.h \
+    worker/Work.h
 
 INCLUDEPATH += $PWD
 
