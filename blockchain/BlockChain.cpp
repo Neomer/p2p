@@ -27,6 +27,11 @@ void BlockChain::load()
         f.close();
     }
     
+	if (getDifficulty().isEmpty())
+	{
+		setDifficulty("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	}
+	
     Context::instance().busMain.subscribe("block.new", this);
 }
 
@@ -151,9 +156,10 @@ void BlockChain::updateDifficulty()
 		{
 			throw std::runtime_error("Block-chain is corrupted!");
 		}
-		b = b1;
 		avg_interval += b1.getCreationTime().secsTo(b.getCreationTime()) * idx_table[i];
+		b = b1;
 	}
+	qDebug() << "Diff factor:" << avg_interval;
 }
 
 bool BlockChain::onEventCatch(void *bus, QString event, QVariant data)

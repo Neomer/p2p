@@ -18,6 +18,7 @@ public:
 private slots:
     void blockFound(Block *b);
     void tickHPS();
+	void workComplete(Work *work, Worker *worker);
     
 signals:
     void blockMined(Block *);

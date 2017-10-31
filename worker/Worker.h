@@ -23,7 +23,7 @@ public:
     double hps();
     
 signals:
-	void workComplete(Work *);
+	void workComplete(Work *, Worker*);
     
 private slots:
     void tick();

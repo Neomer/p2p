@@ -68,7 +68,7 @@ void Worker::run()
                     {
                         b->setNonce(_nonce);
                         b->setConfirmed(true);
-						emit workComplete(_currentWork);
+						emit workComplete(_currentWork, this);
 						_currentWork = 0;
                         break;
                     }

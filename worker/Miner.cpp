@@ -11,7 +11,8 @@ Miner::Miner(int threads, QObject *parent) :
     for (int i = 0; i < threads; i++)
     {
         Worker *w = new Worker(this);
-        connect(w, SIGNAL(blockGenerated(Block*)), this, SLOT(blockFound(Block*)));
+        //connect(w, SIGNAL(blockGenerated(Block*)), this, SLOT(blockFound(Block*)));
+		connect(w, SIGNAL(workComplete(Work*, Worker*)), this, SLOT(workComplete(Work*, Worker*)));
         _workers << w;
     }
 }
@@ -24,7 +25,7 @@ void Miner::startMine()
     nb->setPreviousBlock(BlockChain::instance().getLastBlockHash());
     foreach (Worker *w, _workers) 
     {
-        w->createWork(new Work(nb, Hash("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")));
+        w->createWork(new Work(nb, BlockChain::instance().getDifficulty()));
     }
 }
 
@@ -50,7 +51,22 @@ void Miner::tickHPS()
     if (res > 0)
     {
         qDebug() << "Hashrate:" << res << "hps";
-    }
+	}
+}
+
+void Miner::workComplete(Work *work, Worker *worker)
+{
+	foreach (Worker *w, _workers) 
+    {
+		if (w != worker)
+		{
+			w->stopWork();
+			while (!w->isStopped());
+		}
+	}
+    Context::instance().busMain.publish("block.new", QVariant::fromValue((qint64)work->block()));
+    emit blockMined(work->block());
+    startMine();
 }
 
 void Miner::run()
