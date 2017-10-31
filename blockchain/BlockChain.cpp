@@ -125,7 +125,29 @@ QStringList BlockChain::getPathFromHash(Hash h)
     {
         ret << sHash.mid(i, 2);
     }
-    return ret;
+	return ret;
+}
+
+void BlockChain::updateDifficulty()
+{
+	double avg_interval = 0;
+	float idx_table[5] = {0.30f, 0.25f, 0.20f, 0.15f, 0.10f};
+	QDateTime time = QDateTime::currentDateTime();
+	Block b, b1;
+	if (!find(&b, getLastBlockHash()))
+	{
+		throw std::runtime_error("Block-chain is corrupted!");
+	}
+	
+	for (int i = 0; i < 5; i++)
+	{
+		if (!find(&b1, b.getPreviousBlock()))
+		{
+			throw std::runtime_error("Block-chain is corrupted!");
+		}
+		b = b1;
+		time = b.getCreationTime();
+	}
 }
 
 bool BlockChain::onEventCatch(void *bus, QString event, QVariant data)

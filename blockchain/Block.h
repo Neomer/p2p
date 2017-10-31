@@ -13,13 +13,14 @@ class Block : public ISerializable
     Q_PROPERTY(quint32 number READ getNumber WRITE setNumber)
     Q_PROPERTY(QString data READ getData WRITE setData)
     Q_PROPERTY(QString previousBlock READ getPreviousBlock WRITE setPreviousBlock)
-    Q_PROPERTY(QDateTime creationTime READ creationTime WRITE setCreationTime)
+    Q_PROPERTY(QDateTime creationTime READ getCreationTime WRITE setCreationTime)
     Q_PROPERTY(int nonce READ getNonce WRITE setNonce)
     Q_PROPERTY(bool confirmed READ getConfirmed WRITE setConfirmed STORED false)
     Q_PROPERTY(int version READ getVersion WRITE setVersion)
     
 public:
     Block(QObject *parent = 0);
+	Block &operator =(const Block &other);
     
     quint32 getNumber() const
     {
@@ -37,7 +38,7 @@ public:
     }
     
     
-    QDateTime creationTime() const
+    QDateTime getCreationTime() const
     {
         return m_creationTime;
     }

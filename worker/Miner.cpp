@@ -24,7 +24,7 @@ void Miner::startMine()
     nb->setPreviousBlock(BlockChain::instance().getLastBlockHash());
     foreach (Worker *w, _workers) 
     {
-        w->addBlock(nb);
+        w->createWork(new Work(nb, Hash("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")));
     }
 }
 

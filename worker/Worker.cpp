@@ -5,25 +5,21 @@
 
 Worker::Worker(QObject *parent) :
     QThread(parent),
-    _stop(false)
+    _stop(false),
+	_currentWork(0)
 {
-    //_tmrHashrate = new QTimer(this);
-    //connect(_tmrHashrate, SIGNAL(timeout()), this, SLOT(tick()));
-    //_tmrHashrate->setInterval(60000);
-    //_tmrHashrate->start();
-    
     start();
 }
 
-void Worker::addBlock(Block *b)
-{
-    _stop = false;
-    _blocks << b;
-}
 
 void Worker::stopWork()
 {
-    _stop = true;
+	_stop = true;
+}
+
+void Worker::createWork(Work *work)
+{
+	_currentWork = work;
 }
 
 double Worker::hps()
@@ -50,10 +46,10 @@ void Worker::run()
 {
     while (true)
     {
-        if (!_blocks.isEmpty())
+        if (_currentWork)
         {
             _tt = QDateTime::currentMSecsSinceEpoch() * 0.001;
-            Block *b = _blocks.takeFirst();
+            Block *b = _currentWork->block();
             _stopped = false;
             qDebug() << "Block" << b->getNumber() << "began to be mined...";
             while (true)
@@ -68,12 +64,12 @@ void Worker::run()
                     }
                     
                     jo["nonce"] = ISerializable::toJsonValue(_nonce);
-                    if (Hash::hash(jo) < Hash("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"))
+                    if (Hash::hash(jo) < _currentWork->goal())
                     {
-                        //emit blockGenerated(b);
                         b->setNonce(_nonce);
                         b->setConfirmed(true);
-                        emit blockGenerated(b);
+						emit workComplete(_currentWork);
+						_currentWork = 0;
                         break;
                     }
                 }

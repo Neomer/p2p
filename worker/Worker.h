@@ -14,16 +14,16 @@ class Worker : public QThread
 public:
     explicit Worker(QObject *parent = nullptr);
     
-    void addBlock(Block *b);
     void stopWork();
-	void createWork(Work work);
+	void createWork(Work *work);
+	Work* currentWork() { return _currentWork; }	
     
     bool isStopped() { return _stopped; }
     
     double hps();
     
 signals:
-    void blockGenerated(Block *);
+	void workComplete(Work *);
     
 private slots:
     void tick();
@@ -32,7 +32,8 @@ protected:
     void run();
     
 private:
-    QList<Work> _blocks;
+    //QList<Work> _works;
+	Work *_currentWork;
     QTimer *_tmrHashrate;
     qint64 _tt;
     quint64 _nonce, _nonceSave;

@@ -15,6 +15,7 @@ class BlockChain: public ISerializable, public IEventDispatcher
     
     Q_PROPERTY(quint64 lastBlockNumber READ getLastBlockNumber WRITE setLastBlockNumber)
     Q_PROPERTY(QString lastBlockHash READ getLastBlockHash WRITE setLastBlockHash)
+	Q_PROPERTY(QString difficulty READ getDifficulty WRITE setDifficulty)
     
 public:
     static BlockChain &instance()
@@ -39,7 +40,14 @@ public:
     {
         return m_lastBlockHash;
     }
-    
+
+	QString getDifficulty() const
+	{
+		return m_difficulty;
+	}
+
+	bool onEventCatch(void *bus, QString event, QVariant data);
+	
 public slots:
     void setLastBlockNumber(quint64 lastBlockNumber)
     {
@@ -50,19 +58,23 @@ public slots:
     {
         m_lastBlockHash = lastBlockHash;
     }
-    
+	
+	void setDifficulty(QString difficulty)
+	{
+		m_difficulty = difficulty;
+	}
+	
 private:
     BlockChain();
     BlockChain(const BlockChain& other);
     BlockChain &operator =(const BlockChain& other);
-    
+	
     QStringList getPathFromHash(Hash h);
+	void updateDifficulty();
+	
     quint64 m_lastBlockNumber;
     QString m_lastBlockHash;
-    
-    // IEventDispatcher interface
-public:
-    bool onEventCatch(void *bus, QString event, QVariant data);
+	QString m_difficulty;
 };
 
 #endif // BLOCKCHAIN_H

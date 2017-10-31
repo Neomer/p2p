@@ -9,6 +9,7 @@ class Work
 {
 public:
 	Work(Block *block, Hash goal);
+	Work(const Work &other);
 	
 	QDateTime createDateTime() { return _createDateTime; }
 	Hash goal() { return _goal; }
