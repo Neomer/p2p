@@ -64,7 +64,7 @@ void Miner::workComplete(Work *work, Worker *worker)
 			while (!w->isStopped());
 		}
 	}
-    Context::instance().busMain.publish("block.new", QVariant::fromValue((qint64)work->block()));
+    //Context::instance().busMain.publish("block.new", QVariant::fromValue((qint64)work->block()));
     emit blockMined(work->block());
     startMine();
 }

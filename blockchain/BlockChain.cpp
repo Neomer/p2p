@@ -1,10 +1,12 @@
 #include "BlockChain.h"
 #include <QDebug>
 #include <QFile>
+#include <core/Context.h>
 
 BlockChain::BlockChain()
 {
-    
+    connect(Context::instance().pipeController, &PipeController::pipeBlock, this, &BlockChain::pipeBlock);
+    connect(Context::instance().miner, &Miner::blockMined, this, &BlockChain::blockMined);
 }
 
 void BlockChain::load()
@@ -29,7 +31,7 @@ void BlockChain::load()
     
 	if (getDifficulty().isEmpty())
 	{
-		setDifficulty("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+		setDifficulty("000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 	}
 	
     Context::instance().busMain.subscribe("block.new", this);
@@ -177,5 +179,15 @@ bool BlockChain::onEventCatch(void *bus, QString event, QVariant data)
 			return true;
         }
     }
-	return false;
+    return false;
+}
+
+void BlockChain::pipeBlock(std::shared_ptr<Block> block)
+{
+    appendBlock(block.get());
+}
+
+void BlockChain::blockMined(Block *block)
+{
+    appendBlock(block);
 }

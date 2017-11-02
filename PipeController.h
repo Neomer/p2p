@@ -30,9 +30,10 @@ protected:
 
 signals:
     void pipeCommand(QString);
+    void pipeBlock(std::shared_ptr<Block>);
 
 private slots:
-    void pipePackage(PipePackage);
+    void packageReceived(std::shared_ptr<PipePackage> pkg);
 
 private:
 	void sendBlock(Block *block);

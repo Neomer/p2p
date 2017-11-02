@@ -33,8 +33,7 @@ void PipeController::addPipe(Pipe *pipe)
 {
     qDebug() << "New pipe" << (qint64)pipe;
     _pipeList << pipe;
-    //pipe->moveToThread(this);
-    connect(pipe, SIGNAL(dataReceived(PipePackage)), this, SLOT(pipePackage(PipePackage)));
+    connect(pipe, &Pipe::packageReceived, this, &PipeController::packageReceived);
 }
 
 void PipeController::getCount(KeyCommand command)
@@ -63,27 +62,6 @@ void PipeController::run()
     {
         foreach (Pipe *p, _pipeList)
         {
-//            if (!p->isOpen())
-//            {
-//                if (!p->open())
-//                {
-//                    qDebug() << "Pipe" << (int)p << "connection failed!";
-//                    if (p->connectionsFails() > 5)
-//                    {
-//                        //_pipeList.removeOne(p);
-//                        //p->terminate();
-//                        //delete p;
-//                    }
-//                }
-//                else
-//                {
-//                    qDebug() << "Connection established!";
-//                }
-//            }
-//            else
-//            {
-//                //p->ping();
-//            }
             if (p->connectionsFails() > 5)
             {
                 qDebug() << "Connection fail limit exceeded! Closing pipe.";
@@ -95,43 +73,31 @@ void PipeController::run()
     }
 }
 
-void PipeController::pipePackage(PipePackage pkg)
+void PipeController::packageReceived(std::shared_ptr<PipePackage> pkg)
 {
-    if (pkg.command() == PACKAGE_COMMAND_SHARE_REQUEST)
+    switch (pkg->command())
     {
-        QString data;
-        data.append(ip + ";");
-        send(PipePackage(PACKAGE_COMMAND_SHARE_RESPONSE, data.toUtf8()));
+        case PACKAGE_COMMAND_NEW_BLOCK:
+            qDebug() << "New block received!";
+            std::shared_ptr<Block> b(new Block());
+            QJsonParseError err;
+            QJsonDocument json = QJsonDocument::fromJson(pkg->data(), &err);
+            if (err.error != QJsonParseError::NoError)
+            {
+                qDebug() << "Json parsing error!";
+                return;
+            }
+            if (!b->deserialize(json.object()))
+            {
+                qDebug() << "Block is corrupted!";
+                return;
+            }
+            emit pipeBlock(b);
+            break;
     }
-	else if (pkg.command() == PACKAGE_COMMAND_NEW_BLOCK)
-	{
-		qDebug() << "New block received!";
-		Block b;
-		QJsonParseError err;
-		QJsonDocument json = QJsonDocument::fromJson(pkg.data(), &err);
-		if (err.error != QJsonParseError::NoError)
-		{
-			qDebug() << "Json parsing error!";
-			return;
-		}
-		if (!b.deserialize(json.object()))
-		{
-			qDebug() << "Block is corrupted!";
-			return;
-		}
-		if (BlockChain::instance().contains(json.object()["hash"].toString()))
-		{
-			qDebug() << "Block already exists!";
-			return;
-		}
-		qDebug() << "Create block" << b.getNumber() << "...";
-		BlockChain::instance().appendBlock(&b);
-	}
-	else
-    {
-        emit pipeCommand(QString::fromUtf8(pkg.data()));
-	}
 }
+
+
 
 void PipeController::sendBlock(Block *block)
 {

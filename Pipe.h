@@ -9,6 +9,7 @@
 #include <QThread>
 #include <QDateTime>
 #include <QTimer>
+#include <memory>
 
 #include "PipePackage.h"
 
@@ -34,7 +35,7 @@ private slots:
     void ping();
 
 signals:
-    void dataReceived(PipePackage);
+    void packageReceived(std::shared_ptr<PipePackage>);
 
 private:
     QDateTime _lastActive;

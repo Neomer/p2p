@@ -63,6 +63,10 @@ public slots:
 	{
 		m_difficulty = difficulty;
 	}
+    
+private slots:
+    void pipeBlock(std::shared_ptr<Block> block);
+    void blockMined(Block *block);
 	
 private:
     BlockChain();

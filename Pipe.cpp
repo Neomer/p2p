@@ -75,35 +75,34 @@ bool Pipe::open()
 void Pipe::send(PipePackage data)
 {
     qDebug() << "Pipe" << (qint64)this << "send to" << _socket->peerAddress().toString() << data.rawData().count() << "byte(s)";
-    _socket->write(data.rawData());
+    _socket->write(data.hashed());
 }
 
 void Pipe::ping()
 {
-    qDebug() << "Pipe" << (qint64)this << "send ping request";
     PipePackage resp(PACKAGE_COMMAND_PING_REQUEST);
     if (isClosed()) open();
-    _socket->write(resp.rawData());
+    send(resp);
     _connectionsFails++;
 }
 
 void Pipe::readData()
 {
-    PipePackage pkg(_socket->readAll());
-    if (!pkg.isValid())
+    std::shared_ptr<PipePackage> pkg(new PipePackage(_socket->readAll()));
+    if (!pkg->isValid())
     {
         qDebug() << "Invalid package!";
         return;
     }
-    if (pkg.command() == PACKAGE_COMMAND_PING_REQUEST)
+    if (pkg->command() == PACKAGE_COMMAND_PING_REQUEST)
     {
         qDebug() << "Pipe" << (qint64)this << "receive ping request";
         PipePackage resp(PACKAGE_COMMAND_PING_RESPONSE);
         _lastActive = QDateTime::currentDateTime();
-        send(resp.rawData());
+        send(resp);
         _connectionsFails = 0;
     }
-    else if (pkg.command() == PACKAGE_COMMAND_PING_RESPONSE)
+    else if (pkg->command() == PACKAGE_COMMAND_PING_RESPONSE)
     {
         qDebug() << "Pipe" << (qint64)this << "receive ping response";
         _lastActive = QDateTime::currentDateTime();
@@ -111,8 +110,8 @@ void Pipe::readData()
     }
     else
     {
-        qDebug() << "Pipe" << (qint64)this << "received from" << _socket->peerAddress().toString() << "command" << pkg.command();
-        emit dataReceived(pkg);
+        qDebug() << "Pipe" << (qint64)this << "received from" << _socket->peerAddress().toString() << "command" << pkg->command();
+        emit packageReceived(pkg);
     }
 }
 

